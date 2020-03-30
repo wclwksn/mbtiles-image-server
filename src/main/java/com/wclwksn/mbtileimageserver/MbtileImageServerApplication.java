@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Bean;
 import com.wclwksn.mbtileimageserver.repository.mbconfigRespository;
 
 @SpringBootApplication
-public class Useh2prjApplication {
+public class MbtileImageServerApplication {
 
-	private static final Logger log = LoggerFactory.getLogger(Useh2prjApplication.class);
+	private static final Logger log = LoggerFactory.getLogger(MbtileImageServerApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(Useh2prjApplication.class, args);
+		SpringApplication.run(MbtileImageServerApplication.class, args);
 	}
 
 	
