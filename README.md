@@ -10,4 +10,4 @@
 
 
 ## 公众号
- ![image] (https://github.com/wclwksn/mbtiles-image-server/blob/master/public_code.jpg)
+ ![image](https://github.com/wclwksn/mbtiles-image-server/blob/master/public_code.jpg)
