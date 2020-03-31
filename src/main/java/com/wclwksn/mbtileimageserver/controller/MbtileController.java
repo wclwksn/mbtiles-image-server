@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,17 @@ public class MbtileController {
 	@Autowired
 	MblistBean _mbtileBean;
 
+	@Value("${mbdata.path}")
+	private String mbpath;
+
+	@RequestMapping(method = RequestMethod.GET, path = "datapath", produces = { "application/json;charset=UTF-8" })
+	public String DataPath() {
+
+		return String.format("{\"path\": \"%s\"}", mbpath);
+	}
+
 	@ResponseBody
-	@RequestMapping(method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@RequestMapping(method = RequestMethod.GET, path = "datalist", produces = { "application/json;charset=UTF-8" })
 	public List<MbtileInfo> MbtileIndex() {
 		return _mbtileBean.getAllmbfiles();
 	}
@@ -51,12 +61,12 @@ public class MbtileController {
 	@GetMapping("{layer}/{zoom}/{x}/{y}")
 	public ResponseEntity getTile(@PathVariable int x, @PathVariable int y, @PathVariable int zoom,
 			@PathVariable String layer) {
-		try { 
+		try {
 			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
 			if (mbTilesReader != null) {
 				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y);
-				
-				if ( tile.getData() != null) {
+
+				if (tile.getData() != null) {
 					int size = tile.getData().available();
 					byte[] bytes = new byte[size];
 					tile.getData().read(bytes);
