@@ -52,7 +52,8 @@ public class MbtileController {
 	public ResponseEntity getTile(@PathVariable int x, @PathVariable int y, @PathVariable int zoom,
 			@PathVariable String layer) {
 		try {
-
+//			y = (int) (Math.pow(2, zoom) - y - 1);
+			
 			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
 			if (mbTilesReader != null) {
 				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y);
@@ -63,6 +64,8 @@ public class MbtileController {
 					tile.getData().read(bytes);
 					HttpHeaders headers = new HttpHeaders();
 					headers.add("Content-Type", "image/png");
+//					log.info(layer);
+//					log.info(String.format("切片 x=%d, y=%d & zoom=%d ", x, y, zoom));
 					return ResponseEntity.status(HttpStatus.OK).headers(headers).body(bytes);
 				}
 			}
