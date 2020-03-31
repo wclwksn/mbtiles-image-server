@@ -51,9 +51,7 @@ public class MbtileController {
 	@GetMapping("{layer}/{zoom}/{x}/{y}")
 	public ResponseEntity getTile(@PathVariable int x, @PathVariable int y, @PathVariable int zoom,
 			@PathVariable String layer) {
-		try {
-//			y = (int) (Math.pow(2, zoom) - y - 1);
-			
+		try { 
 			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
 			if (mbTilesReader != null) {
 				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y);
