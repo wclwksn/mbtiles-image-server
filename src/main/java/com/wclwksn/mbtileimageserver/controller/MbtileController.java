@@ -43,7 +43,7 @@ public class MbtileController {
 	@RequestMapping(method = RequestMethod.GET, path = "{layer}/metadata", produces = {
 			"application/json;charset=UTF-8" })
 	public MetadataEntry MbtileMetadata(@PathVariable String layer) {
-		MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
+		MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer).get_mBTileReader();
 		if (mbTilesReader != null) {
 			try {
 				return mbTilesReader.getMetadata();
@@ -78,16 +78,16 @@ public class MbtileController {
 	public ResponseEntity getTile(@PathVariable int x, @PathVariable int y, @PathVariable int zoom,
 			@PathVariable String layer) {
 		try {
-			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
+			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer).get_mBTileReader();
 			if (mbTilesReader != null) {
-				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y);
-
+				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y); 
 				if (tile.getData() != null) {
 					int size = tile.getData().available();
 					byte[] bytes = new byte[size];
 					tile.getData().read(bytes);
 					HttpHeaders headers = new HttpHeaders();
-					headers.add("Content-Type", "image/png");
+					headers.add("Content-Type",
+							String.format("image/%s", _mbtileBean.getMBReader(layer).get_imageFormat()));
 //					log.info(layer);
 //					log.info(String.format("切片 x=%d, y=%d & zoom=%d ", x, y, zoom));
 					return ResponseEntity.status(HttpStatus.OK).headers(headers).body(bytes);

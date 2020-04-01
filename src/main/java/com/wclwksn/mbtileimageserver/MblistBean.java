@@ -21,23 +21,23 @@ public class MblistBean implements InitializingBean {
 	private static final Logger log = LoggerFactory.getLogger(MblistBean.class);
 
 	private List<MbtileInfo> _allmbfiles = new ArrayList<MbtileInfo>();
-	private HashMap<String, MBTilesReader> _mbReaderHM = new HashMap<String, MBTilesReader>();
+	private HashMap<String, MbtilesObject> _mbReaderHM = new HashMap<String, MbtilesObject>();
 
 	public List<MbtileInfo> getAllmbfiles() {
 		return _allmbfiles;
 	}
 
-	public HashMap<String, MBTilesReader> getMBReaderHM() {
+	public HashMap<String, MbtilesObject> getMBReaderHM() {
 		return _mbReaderHM;
 	}
 
-	public MBTilesReader getMBReader(String _keyvalue) {
+	public MbtilesObject getMBReader(String _keyvalue) {
 		if (_mbReaderHM.containsKey(_keyvalue)) {
 			return _mbReaderHM.get(_keyvalue);
 		}
 		return null;
 	}
-	
+
 	public MetadataEntry getMetadata(MBTilesReader _mbReader) throws Exception {
 		return _mbReader.getMetadata();
 	}
@@ -64,7 +64,12 @@ public class MblistBean implements InitializingBean {
 					_mbInfo.fullPath = file.getAbsolutePath();
 					_mbInfo.mbFile = file;
 					if (!_mbReaderHM.containsKey(_fileName)) {
-						_mbReaderHM.put(_fileName, new MBTilesReader(file));
+						MBTilesReader _mbReader = new MBTilesReader(file);
+						String _imageformat = _mbReader.getMetadata().getTileMimeType().toString();
+						if (_imageformat.equals("")) {
+							_imageformat = "png";
+						}
+						_mbReaderHM.put(_fileName, new MbtilesObject(_mbReader, _imageformat));
 					}
 					_allmbfiles.add(_mbInfo);
 				}
