@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.wclwksn.mbtileimageserver.MbtileHandle.MBTilesReader;
+import com.wclwksn.mbtileimageserver.MbtileHandle.MetadataEntry;
 import com.wclwksn.mbtileimageserver.model.*;
 
 @Component
@@ -35,6 +36,10 @@ public class MblistBean implements InitializingBean {
 			return _mbReaderHM.get(_keyvalue);
 		}
 		return null;
+	}
+	
+	public MetadataEntry getMetadata(MBTilesReader _mbReader) throws Exception {
+		return _mbReader.getMetadata();
 	}
 
 	public void setmbtilesValue() throws Exception {

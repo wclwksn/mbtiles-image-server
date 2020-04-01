@@ -339,7 +339,7 @@ public class MetadataEntry {
 
     public enum TileSetType {
         OVERLAY("overlay"),
-        BASE_LAYER("baselayer");
+        BASE_LAYER("base");
 
         private String str;
 
@@ -354,7 +354,7 @@ public class MetadataEntry {
 
         public static TileSetType getTypeFromString(String strValue) {
             for (TileSetType t : TileSetType.values()) {
-                if (t.str.equals(strValue)) {
+                if (strValue.contains(t.str)) {
                     return t;
                 }
             }

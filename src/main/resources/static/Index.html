@@ -32,6 +32,10 @@ body {
 	font-size: 18pt;
 	margin-left: 20px;
 }
+
+.infotitle {
+	font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -41,19 +45,43 @@ body {
 		</div>
 
 		<el-row> <el-col :span="24">
-		<div class="">服务器根目录： {{ datapath }}</div>
+		<div>
+			<span class="infotitle">服务器根目录：</span> {{ datapath }}
+		</div>
 		</el-col> </el-row>
 
-		<el-row> <el-col :span="24"> <el-table
-			:data="mblistData" stripe style="width: 100%"> <el-table-column
-			prop="mname" label="图层名称" width="180"> </el-table-column> <el-table-column
-			prop="mbFile" label="图层路径" width="360"> </el-table-column> </el-table> </el-col> </el-row>
-
 		<el-row> <el-col :span="24">
-		地图切片访问Url：http://[IP:PORT]/[图层名称]/[zoom]/[x]/[y] </el-col> </el-row>
+		<div>
+			<span class="infotitle">图层信息：</span>
+		</div>
+		<el-table :data="mblistData" stripe style="width: 100%"> <el-table-column
+			prop="mname" label="图层名称" width="180"> </el-table-column> <el-table-column
+			prop="mbFile" label="图层路径" width="360"> </el-table-column> <el-table-column
+			label="详情" width="100"> <template
+			slot-scope="scope"> <el-button
+			@click="detailInfo(scope.row)" type="text" size="small">查看</el-button>
+		</template> </el-table-column> </el-table> </el-col> </el-row>
 
-		<el-row> <el-col :span="24"> 刷新图层目录：<el-button
-			size="small" @click="refreshLayer">刷新</el-button> </el-col> </el-row>
+		<el-row> <el-col :span="24"> <span class="infotitle">地图切片访问Url：</span>http://[IP:PORT]/[图层名称]/[zoom]/[x]/[y]
+		</el-col> </el-row>
+
+		<el-row> <el-col :span="24"> <span class="infotitle">刷新图层目录：</span>
+		<el-button size="small" @click="refreshLayer">刷新</el-button> </el-col> </el-row>
+
+		<el-dialog :visible.sync="infovisible" title="图层详细信息">
+		<div>
+			<span class="infotitle">图层名称：</span> {{ infoObject.tilesetName }}
+		</div>
+		<div>
+			<span class="infotitle">切片格式：</span> {{ infoObject.tileMimeType }}
+		</div>
+		<div>
+			<span class="infotitle">切片类型：</span> {{ infoObject.tilesetType }}
+		</div>
+		<div>
+			<span class="infotitle">切片版本：</span> {{ infoObject.tilesetVersion }}
+		</div>
+		</el-dialog>
 	</div>
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -92,6 +120,8 @@ axios.get('/mbtiles/datapath')
 				visible : false,
 				datapath:"",
 				mblistData:[],
+				infovisible:false,
+				infoObject:{},
 			}
 		},
 		 methods: {
@@ -111,6 +141,19 @@ axios.get('/mbtiles/datapath')
 						    console.log(error);
 					});  
 			 }, 
+			 detailInfo:function (row)
+			 {
+				 axios.get('/mbtiles/'+row.mname+'/metadata')
+				 .then(function (response) {  
+					vue.infoObject =  response.data; 
+					 vue.infovisible = true;
+					})
+				   .catch(function (error) { 
+						    console.log(error);
+					});  
+				
+				 //console.log(row.mname);
+			 }
 		 }
 	});
 	

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.wclwksn.mbtileimageserver.MblistBean;
 import com.wclwksn.mbtileimageserver.MbtileHandle.MBTilesReader;
+import com.wclwksn.mbtileimageserver.MbtileHandle.MetadataEntry;
 import com.wclwksn.mbtileimageserver.model.*;
 
 @RestController
@@ -36,6 +37,21 @@ public class MbtileController {
 	public String DataPath() {
 
 		return String.format("{\"path\": \"%s\"}", mbpath);
+	}
+
+	@ResponseBody
+	@RequestMapping(method = RequestMethod.GET, path = "{layer}/metadata", produces = {
+			"application/json;charset=UTF-8" })
+	public MetadataEntry MbtileMetadata(@PathVariable String layer) {
+		MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer);
+		if (mbTilesReader != null) {
+			try {
+				return mbTilesReader.getMetadata();
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return null;
 	}
 
 	@ResponseBody
