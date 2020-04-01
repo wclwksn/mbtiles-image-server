@@ -43,7 +43,17 @@ body {
 		<el-row> <el-col :span="24">
 		<div class="">服务器根目录： {{ datapath }}</div>
 		</el-col> </el-row>
-		 
+
+		<el-row> <el-col :span="24"> <el-table
+			:data="mblistData" stripe style="width: 100%"> <el-table-column
+			prop="mname" label="图层名称" width="180"> </el-table-column> <el-table-column
+			prop="mbFile" label="图层路径" width="360"> </el-table-column> </el-table> </el-col> </el-row>
+
+		<el-row> <el-col :span="24">
+		地图切片访问Url：http://[IP:PORT]/[图层名称]/[zoom]/[x]/[y] </el-col> </el-row>
+
+		<el-row> <el-col :span="24"> 刷新图层目录：<el-button
+			size="small" @click="refreshLayer">刷新</el-button> </el-col> </el-row>
 	</div>
 </body>
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
@@ -51,30 +61,59 @@ body {
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script type="text/javascript">
+function getLayerList()
+{
+   axios.get('/mbtiles/datalist')
+	 .then(function (response) {  
+		vue.mblistData =  response.data; 
+		})
+	   .catch(function (error) { 
+			    console.log(error);
+		}); 
+}
+
+window.onload = function ()
+{ 
+axios.get('/mbtiles/datapath')
+ .then(function (response) {  
+	vue.datapath =  response.data.path; 
+	})
+   .catch(function (error) { 
+		    console.log(error);
+	});  
+	
+   getLayerList();
+};
+ 
 	var vue = new Vue({
 		el : '#app',
 		data : function() {
 			return {
 				visible : false,
 				datapath:"",
+				mblistData:[],
 			}
-		}
+		},
+		 methods: {
+			 refreshLayer:function()
+			 {
+				 axios.get('/mbtiles/refresh')
+				 .then(function (response) {  
+					  if(response.data.isSuc)
+						  {
+						  getLayerList();
+						  }else
+							  {
+							  alert(response.data.errorMsg);
+							  }
+					})
+				   .catch(function (error) { 
+						    console.log(error);
+					});  
+			 }, 
+		 }
 	});
 	
-	window.onload = function ()
-	{ 
-			axios.get('/mbtiles/datapath')
-			  .then(function (response) {  
-				  vue.datapath =  response.data.path; 
-			  })
-			  .catch(function (error) { 
-			    console.log(error);
-			  })
-			  .then(function () { 
-			  });
-		
-	};
 	 
-	
 </script>
 </html>
