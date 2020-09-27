@@ -320,7 +320,9 @@ public class MetadataEntry {
 
     public enum TileMimeType {
         PNG,
+        PBF,
         JPG;
+    
 
         @Override
         public String toString() {

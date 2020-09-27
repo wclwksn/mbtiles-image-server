@@ -80,16 +80,19 @@ public class MbtileController {
 		try {
 			MBTilesReader mbTilesReader = _mbtileBean.getMBReader(layer).get_mBTileReader();
 			if (mbTilesReader != null) {
-				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y); 
+				com.wclwksn.mbtileimageserver.MbtileHandle.Tile tile = mbTilesReader.getTile(zoom, x, y);
 				if (tile.getData() != null) {
 					int size = tile.getData().available();
 					byte[] bytes = new byte[size];
 					tile.getData().read(bytes);
 					HttpHeaders headers = new HttpHeaders();
-					headers.add("Content-Type",
-							String.format("image/%s", _mbtileBean.getMBReader(layer).get_imageFormat()));
-//					log.info(layer);
-//					log.info(String.format("切片 x=%d, y=%d & zoom=%d ", x, y, zoom));
+					String _formattypeString = _mbtileBean.getMBReader(layer).get_imageFormat();
+					if (_formattypeString.contains("pbf")) {
+						headers.add("Content-Type", "application/x-protobuf");
+						headers.add("Content-Encoding", "gzip");
+					} else {
+						headers.add("Content-Type", String.format("image/%s", _formattypeString));
+					}
 					return ResponseEntity.status(HttpStatus.OK).headers(headers).body(bytes);
 				}
 			}
