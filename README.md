@@ -1,10 +1,10 @@
 # mbtile-image-server
 地图切片发布服务程序
 ###
-基于springboot实现
-实现获取本地目录中的.mbtiles文件，发布成切片服务
-支持图片格式切片（png\jpg）
-支持矢量格式切片（pbf）
+基于springboot实现   
+实现获取本地目录中的.mbtiles文件，发布成切片服务   
+支持图片格式切片（png\jpg）   
+支持矢量格式切片（pbf）   
 
 
 ## 参照
